@@ -2,6 +2,7 @@ package com.devjoint.library_api.controller;
 
 import com.devjoint.library_api.dto.MemberDto;
 import com.devjoint.library_api.service.MemberService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class MemberController {
 
 
     @PostMapping
-    public ResponseEntity<MemberDto> create(@RequestBody MemberDto dto) {
+    public ResponseEntity<MemberDto> create( @Valid @RequestBody MemberDto dto) {
         MemberDto created = memberService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -37,7 +38,7 @@ public class MemberController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<MemberDto> update(@PathVariable Long id, @RequestBody MemberDto dto) {
+    public ResponseEntity<MemberDto> update(@PathVariable Long id,@Valid @RequestBody MemberDto dto) {
         return ResponseEntity.ok(memberService.update(id, dto));
     }
 

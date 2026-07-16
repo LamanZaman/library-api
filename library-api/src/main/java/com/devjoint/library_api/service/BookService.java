@@ -3,6 +3,7 @@ package com.devjoint.library_api.service;
 import com.devjoint.library_api.dto.BookDto;
 import com.devjoint.library_api.entity.Author;
 import com.devjoint.library_api.entity.Book;
+import com.devjoint.library_api.exception.ResourceNotFoundException;
 import com.devjoint.library_api.repository.AuthorRepository;
 import com.devjoint.library_api.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,17 +44,17 @@ public class BookService {
 
     public BookDto getById(Long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
         return toDto(book);
     }
 
     // UPDATE
     public BookDto update(Long id, BookDto dto) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
 
         Author author = authorRepository.findById(dto.getAuthorId())
-                .orElseThrow(() -> new RuntimeException("Author not found with id: " + dto.getAuthorId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + dto.getAuthorId()));
 
         book.setTitle(dto.getTitle());
         book.setIsbn(dto.getIsbn());
@@ -66,7 +67,7 @@ public class BookService {
     // DELETE
     public void delete(Long id) {
         if (!bookRepository.existsById(id)) {
-            throw new RuntimeException("Book not found with id: " + id);
+            throw new ResourceNotFoundException("Book not found with id: " + id);
         }
         bookRepository.deleteById(id);
     }

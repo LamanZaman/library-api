@@ -2,6 +2,7 @@ package com.devjoint.library_api.controller;
 
 import com.devjoint.library_api.dto.AuthorDto;
 import com.devjoint.library_api.service.AuthorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class AuthorController {
 
 
     @PostMapping
-    public ResponseEntity<AuthorDto> create(@RequestBody AuthorDto dto) {
+    public ResponseEntity<AuthorDto> create( @Valid @RequestBody AuthorDto dto) {
         AuthorDto created = authorService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -37,7 +38,7 @@ public class AuthorController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<AuthorDto> update(@PathVariable Long id, @RequestBody AuthorDto dto) {
+    public ResponseEntity<AuthorDto> update(@PathVariable Long id, @Valid @RequestBody AuthorDto dto) {
         return ResponseEntity.ok(authorService.update(id, dto));
     }
 

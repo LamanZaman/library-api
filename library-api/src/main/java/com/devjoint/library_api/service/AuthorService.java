@@ -2,6 +2,7 @@ package com.devjoint.library_api.service;
 
 import com.devjoint.library_api.dto.AuthorDto;
 import com.devjoint.library_api.entity.Author;
+import com.devjoint.library_api.exception.ResourceNotFoundException;
 import com.devjoint.library_api.repository.AuthorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,14 +37,14 @@ public class AuthorService {
 
     public AuthorDto getById(Long id) {
         Author author = authorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + id));
         return toDto(author);
     }
 
     // UPDATE
     public AuthorDto update(Long id, AuthorDto dto) {
         Author author = authorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + id));
 
         author.setFullName(dto.getFullName());
         author.setNationality(dto.getNationality());
@@ -55,7 +56,7 @@ public class AuthorService {
     // DELETE
     public void delete(Long id) {
         if (!authorRepository.existsById(id)) {
-            throw new RuntimeException("Author not found with id: " + id);
+            throw new ResourceNotFoundException("Author not found with id: " + id);
         }
         authorRepository.deleteById(id);
     }

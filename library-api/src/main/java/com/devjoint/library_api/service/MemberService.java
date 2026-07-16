@@ -2,6 +2,7 @@ package com.devjoint.library_api.service;
 
 import com.devjoint.library_api.dto.MemberDto;
 import com.devjoint.library_api.entity.Member;
+import com.devjoint.library_api.exception.ResourceNotFoundException;
 import com.devjoint.library_api.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,7 @@ public class MemberService {
     // UPDATE
     public MemberDto update(Long id, MemberDto dto) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Member not found with id: " + id));
 
         member.setFullName(dto.getFullName());
         member.setEmail(dto.getEmail());
@@ -57,7 +58,7 @@ public class MemberService {
     // DELETE
     public void delete(Long id) {
         if (!memberRepository.existsById(id)) {
-            throw new RuntimeException("Member not found with id: " + id);
+            throw new ResourceNotFoundException("Member not found with id: " + id);
         }
         memberRepository.deleteById(id);
     }
