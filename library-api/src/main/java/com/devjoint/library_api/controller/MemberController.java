@@ -4,6 +4,10 @@ import com.devjoint.library_api.dto.MemberDto;
 import com.devjoint.library_api.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +30,14 @@ public class MemberController {
 
 
     @GetMapping
-    public ResponseEntity<List<MemberDto>> getAll() {
-        return ResponseEntity.ok(memberService.getAll());
-    }
+    public ResponseEntity<Page<MemberDto>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy) {
 
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return ResponseEntity.ok(memberService.getAll(pageable));
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<MemberDto> getById(@PathVariable Long id) {

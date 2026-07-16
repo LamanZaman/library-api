@@ -7,6 +7,8 @@ import com.devjoint.library_api.exception.ResourceNotFoundException;
 import com.devjoint.library_api.repository.AuthorRepository;
 import com.devjoint.library_api.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,11 +36,9 @@ public class BookService {
     }
 
 
-    public List<BookDto> getAll() {
-        return bookRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+    public Page<BookDto> getAll(Pageable pageable) {
+        return bookRepository.findAll(pageable)
+                .map(this::toDto);
     }
 
 

@@ -5,8 +5,9 @@ import com.devjoint.library_api.entity.Author;
 import com.devjoint.library_api.exception.ResourceNotFoundException;
 import com.devjoint.library_api.repository.AuthorRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,11 +28,9 @@ public class AuthorService {
     }
 
 
-    public List<AuthorDto> getAll() {
-        return authorRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+    public Page<AuthorDto> getAll(Pageable pageable) {
+        return authorRepository.findAll(pageable)
+                .map(this::toDto);
     }
 
 

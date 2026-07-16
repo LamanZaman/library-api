@@ -5,6 +5,8 @@ import com.devjoint.library_api.entity.Member;
 import com.devjoint.library_api.exception.ResourceNotFoundException;
 import com.devjoint.library_api.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,11 +30,9 @@ public class MemberService {
     }
 
 
-    public List<MemberDto> getAll() {
-        return memberRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+    public Page<MemberDto> getAll(Pageable pageable) {
+        return memberRepository.findAll(pageable)
+                .map(this::toDto);
     }
 
 
