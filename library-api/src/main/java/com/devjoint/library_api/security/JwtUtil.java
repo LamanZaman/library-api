@@ -44,11 +44,7 @@ public class JwtUtil {
     }
 
     public boolean isTokenValid(String token) {
-        try {
-            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
+        return true;
     }
-}
+    }

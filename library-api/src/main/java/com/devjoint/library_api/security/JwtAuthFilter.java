@@ -13,7 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
+import io.jsonwebtoken.ExpiredJwtException;
 import java.io.IOException;
 import java.util.List;
 
@@ -38,24 +38,24 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
 
-        if (!jwtUtil.isTokenValid(token)) {
-            filterChain.doFilter(request, response);
-            return;
+        try {
+            if (!jwtUtil.isTokenValid(token)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            String username = jwtUtil.extractUsername(token);
+            String role = jwtUtil.extractRole(token);
+
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+                var authToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        } catch (ExpiredJwtException e) {
+            request.setAttribute("expired", true);
         }
-
-        String username = jwtUtil.extractUsername(token);
-        String role = jwtUtil.extractRole(token);
-
-
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
-
-            var authToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-        }
-
         filterChain.doFilter(request, response);
     }
 }
