@@ -56,4 +56,29 @@ public class BookController {
         bookService.delete(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/by-category")
+    public ResponseEntity<List<BookDto>> getByCategory(@RequestParam String category) {
+        return ResponseEntity.ok(bookService.getByCategory(category));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<BookDto>> searchByAuthorAndKeyword(
+            @RequestParam Long authorId,
+            @RequestParam String keyword) {
+        return ResponseEntity.ok(bookService.searchByAuthorAndKeyword(authorId, keyword));
+    }
+
+    @GetMapping("/currently-loaned")
+    public ResponseEntity<List<BookDto>> getCurrentlyLoanedBooks() {
+        return ResponseEntity.ok(bookService.getCurrentlyLoanedBooks());
+    }
+
+
+    @GetMapping("/search-dynamic")
+    public ResponseEntity<List<BookDto>> searchDynamic(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) String category) {
+        return ResponseEntity.ok(bookService.searchBooks(title, author, category));
+    }
 }
