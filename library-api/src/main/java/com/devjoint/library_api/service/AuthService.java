@@ -8,6 +8,7 @@ import com.devjoint.library_api.entity.User;
 import com.devjoint.library_api.repository.UserRepository;
 import com.devjoint.library_api.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,7 @@ public class AuthService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid username or password"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Invalid username or password");
+            throw new BadCredentialsException("Invalid username or password");
         }
 
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());

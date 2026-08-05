@@ -1,8 +1,9 @@
 package com.devjoint.library_api.security;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.io.Decoders;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -11,9 +12,17 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
+    @Value("${jwt.secret}")
+    private String secretKeyString;
 
-    private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private SecretKey key;
+
     private final long expirationMs = 1000 * 60 * 60;
+
+    @PostConstruct
+    public void init() {
+        this.key = io.jsonwebtoken.security.Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKeyString));
+    }
 
     public String generateToken(String username, String role) {
         return Jwts.builder()
@@ -47,4 +56,4 @@ public class JwtUtil {
         Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
         return true;
     }
-    }
+}

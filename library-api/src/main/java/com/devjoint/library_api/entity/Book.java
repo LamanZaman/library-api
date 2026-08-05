@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "books")
@@ -19,4 +21,16 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Author author;
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "book_categories",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories = new HashSet<>();
+
+    @OneToMany(mappedBy = "book")
+    private Set<Loan> loans = new HashSet<>();
 }

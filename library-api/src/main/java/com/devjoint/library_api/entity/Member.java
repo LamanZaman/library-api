@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "members")
 @Data
@@ -19,4 +22,7 @@ public class Member {
     private String fullName;
     private String email;
     private LocalDate registrationDate;
+
+    @OneToMany(mappedBy = "member")
+    private Set<Loan> loans = new HashSet<>();
 }
