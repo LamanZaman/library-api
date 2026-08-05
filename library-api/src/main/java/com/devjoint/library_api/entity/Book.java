@@ -1,5 +1,6 @@
 package com.devjoint.library_api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,7 +31,8 @@ public class Book {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private Set<Category> categories = new HashSet<>();
-
+    @JsonIgnore
     @OneToMany(mappedBy = "book")
     private Set<Loan> loans = new HashSet<>();
+    private boolean available = true;
 }

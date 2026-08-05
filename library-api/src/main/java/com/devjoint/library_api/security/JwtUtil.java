@@ -18,7 +18,7 @@ public class JwtUtil {
     private SecretKey key;
 
     private final long expirationMs = 1000 * 60 * 60;
-
+    private boolean available = true;
     @PostConstruct
     public void init() {
         this.key = io.jsonwebtoken.security.Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKeyString));

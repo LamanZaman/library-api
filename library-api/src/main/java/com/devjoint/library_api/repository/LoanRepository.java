@@ -17,4 +17,7 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
 
     @Query("SELECT l FROM Loan l WHERE l.returnDate IS NULL AND l.loanDate < :date")
     List<Loan> findOverdueLoans(@Param("date") LocalDate date);
+
+    @Query("SELECT l FROM Loan l JOIN FETCH l.book JOIN FETCH l.member WHERE l.returnDate IS NULL")
+    List<Loan> findActiveLoansWithDetails();
 }

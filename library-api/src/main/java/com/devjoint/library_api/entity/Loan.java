@@ -32,5 +32,5 @@ public class Loan {
 
     private LocalDate loanDate;
 
-    private LocalDate returnDate; // null olarsa, hələ qaytarılmayıb deməkdir
+    private LocalDate returnDate;
 }

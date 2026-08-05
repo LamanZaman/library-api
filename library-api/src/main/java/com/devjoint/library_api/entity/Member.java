@@ -1,5 +1,6 @@
 package com.devjoint.library_api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +23,7 @@ public class Member {
     private String fullName;
     private String email;
     private LocalDate registrationDate;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "member")
     private Set<Loan> loans = new HashSet<>();
 }
