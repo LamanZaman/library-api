@@ -33,4 +33,6 @@ public class Loan {
     private LocalDate loanDate;
 
     private LocalDate returnDate;
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean overdue = false;
 }
