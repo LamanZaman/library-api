@@ -8,6 +8,7 @@ import com.devjoint.library_api.repository.AuthorRepository;
 import com.devjoint.library_api.repository.BookRepository;
 import com.devjoint.library_api.specification.BookSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -62,6 +63,7 @@ public class BookService {
     }
 
     // UPDATE
+    @CacheEvict(value = "books", key = "#id")
     public BookDto update(Long id, BookDto dto) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
@@ -78,6 +80,7 @@ public class BookService {
     }
 
     // DELETE
+    @CacheEvict(value = "books", key = "#id")
     public void delete(Long id) {
         if (!bookRepository.existsById(id)) {
             throw new ResourceNotFoundException("Book not found with id: " + id);

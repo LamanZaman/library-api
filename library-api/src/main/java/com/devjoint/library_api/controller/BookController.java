@@ -3,6 +3,7 @@ package com.devjoint.library_api.controller;
 import com.devjoint.library_api.dto.BookDto;
 import com.devjoint.library_api.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 
-
+@Tag(name = "Books", description = "Kitablarla bağlı əməliyyatlar, cache və fayl idarəetməsi daxil olmaqla")
 @RestController
 @RequestMapping("/api/books")
 @RequiredArgsConstructor
