@@ -35,4 +35,9 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private Set<Loan> loans = new HashSet<>();
     private boolean available = true;
+
+    @Column(name = "cover_image_path")
+    private String coverImagePath;
+
+
 }

@@ -16,6 +16,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import java.nio.file.*;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.List;
+
+
 
 @Service
 @RequiredArgsConstructor
@@ -121,4 +130,64 @@ public class BookService {
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
+
+    private static final List<String> ALLOWED_TYPES = List.of("image/jpeg", "image/png");
+    private static final long MAX_SIZE = 5 * 1024 * 1024;
+
+    public String uploadCoverImage(Long bookId, MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Fayl boşdur");
+        }
+        if (!ALLOWED_TYPES.contains(file.getContentType())) {
+            throw new IllegalArgumentException("Yalnız JPEG/PNG fayllarına icazə verilir");
+        }
+        if (file.getSize() > MAX_SIZE) {
+            throw new IllegalArgumentException("Fayl ölçüsü 5MB-dan çox ola bilməz");
+        }
+
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + bookId));
+
+        try {
+            String uploadDir = "uploads/covers";
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            String fileName = bookId + "_" + file.getOriginalFilename();
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            book.setCoverImagePath(filePath.toString());
+            bookRepository.save(book);
+
+            return filePath.toString();
+        } catch (IOException e) {
+            throw new RuntimeException("Fayl yükləmə xətası: " + e.getMessage());
+        }
+    }
+
+    public Resource getCoverImage(Long bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + bookId));
+
+        if (book.getCoverImagePath() == null) {
+            throw new ResourceNotFoundException("Bu kitab üçün cover şəkli yoxdur");
+        }
+
+        try {
+            Path filePath = Paths.get(book.getCoverImagePath());
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists()) {
+                return resource;
+            } else {
+                throw new ResourceNotFoundException("Fayl tapılmadı");
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Fayl oxunması xətası: " + e.getMessage());
+        }
+    }
+
+
 }

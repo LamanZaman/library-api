@@ -2,6 +2,7 @@ package com.devjoint.library_api.controller;
 
 import com.devjoint.library_api.dto.BookDto;
 import com.devjoint.library_api.service.BookService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+
 
 @RestController
 @RequestMapping("/api/books")
@@ -81,4 +88,21 @@ public class BookController {
             @RequestParam(required = false) String category) {
         return ResponseEntity.ok(bookService.searchBooks(title, author, category));
     }
+    @Operation(summary = "Upload book cover")
+    @PostMapping(value = "/{id}/cover", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadCover(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file) {
+        String path = bookService.uploadCoverImage(id, file);
+        return ResponseEntity.ok(path);
+    }
+
+    @GetMapping("/{id}/cover")
+    public ResponseEntity<Resource> downloadCover(@PathVariable Long id) {
+        Resource resource = bookService.getCoverImage(id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(resource);
+    }
+
 }
