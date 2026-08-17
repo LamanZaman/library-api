@@ -24,7 +24,7 @@ public class LoanService {
     private final BookRepository bookRepository;
     private final MemberRepository memberRepository;
 
-    // Bir neçə cədvələ (loans + books) yazma — @Transactional ilə əhatə olunub
+
     @Transactional
     public LoanDto borrowBook(Long bookId, Long memberId) {
         Book book = bookRepository.findById(bookId)
@@ -47,7 +47,7 @@ public class LoanService {
 
         book.setAvailable(false);
         bookRepository.save(book);
-
+        emailService.sendLoanConfirmationEmail(member.getEmail(), book.getTitle());
         return toDto(savedLoan);
     }
 
@@ -94,4 +94,6 @@ public class LoanService {
                 loan.getReturnDate()
         );
     }
+    private final EmailService emailService;
+
 }
