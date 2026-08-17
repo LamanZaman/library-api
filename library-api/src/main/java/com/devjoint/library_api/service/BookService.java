@@ -8,6 +8,7 @@ import com.devjoint.library_api.repository.AuthorRepository;
 import com.devjoint.library_api.repository.BookRepository;
 import com.devjoint.library_api.specification.BookSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -44,7 +45,7 @@ public class BookService {
                 .map(this::toDto);
     }
 
-
+    @Cacheable(value = "books", key = "#id")
     public BookDto getById(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
